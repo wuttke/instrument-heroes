@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <title>Instrument-Helden</title>
+    
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/logo_96.png?v=1747487106949" />
+    <link rel="apple-touch-icon" sizes="180x180" type="image/png" href="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/apple-touch-icon_180.png?v=1747515962284" />
+    <link rel="manifest" href="/manifest.json">
+  </head>
+  
+  <body onload="initApp();">
+    <div class="container">
+      <div class="sidebar">
+        <img src="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/logo_96.png?v=1747487106949">
+        <button title="Klavier" onclick="recordPracticed('piano');">
+          <img src="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/piano_128.png?v=1747484468493" width="86">
+        </button>
+        <button title="Cello" onclick="recordPracticed('cello');">
+          <img src="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/cello_128.png?v=1747484282826" width="86">
+        </button>
+        <button title="Trompete" onclick="recordPracticed('trumpet');">
+          <img src="https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/trumpet_128.png?v=1747484472543" width="86">
+        </button>
+      </div>
+
+      <div class="main">
+        <div class="title" id="title">Instrument-Helden</div>
+        <table id="heroe-table">
+          <thead>
+            <tr>
+              <th class="day-col">Tag</th>
+              <th class="instrument-col">Klavier</th>
+              <th class="instrument-col">Cello</th>
+              <th class="instrument-col">Trompete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Montag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Dienstag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Mittwoch</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Donnerstag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Freitag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Samstag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Sonntag</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="week-nav">
+          <button onclick="prevWeek()">← Vorherige Woche</button>
+          <button onclick="nextWeek()">Nächste Woche →</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="heroes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </body>
+</html>
