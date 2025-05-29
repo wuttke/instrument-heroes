@@ -88,10 +88,6 @@ td.instrument-col {
   width: 150px;
 }
 
-tr {
-  height: 52px;
-}
-
 tr.today {
   background-color: #fff3cd; /* zartes Gelb */
 }

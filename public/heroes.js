@@ -3,7 +3,23 @@ var prevRows = [];
 
 const assets = {
   note_32 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/note_32.png?v=1747487274555",
-  check_32 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/check_32.png?v=1747487604890"
+  check_32 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/check_32.png?v=1747487604890",
+  
+  trumpet_mp3 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/trumpet.mp3?v=1747517088164",
+  cello_mp3 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/cello.mp3?v=1747517764894",
+  piano_mp3 : "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/piano.mp3?v=1747517984983",
+  
+  cello_happy_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/cello_happy_128.png?v=1748174800377",
+  cello_neutral_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/cello_neutral_128.png?v=1748174800880",
+  cello_sad_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/cello_sad_128.png?v=1748174801358",
+  
+  piano_happy_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/piano_happy_128.png?v=1748174812406",
+  piano_neutral_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/piano_neutral_128.png?v=1748174812918",
+  piano_sad_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/piano_sad_128.png?v=1748174813262",
+  
+  trumpet_happy_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/trumpet_happy_128.png?v=1748174813591",
+  trumpet_neutral_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/trumpet_neutral_128.png?v=1748174813980",
+  trumpet_sad_128: "https://cdn.glitch.global/d15ce2c5-2b8a-4899-b0e1-16834e5d651a/trumpet_sad_128.png?v=1748174814314"
 };
 
 const instruments = ["piano", "cello", "trumpet"];
@@ -16,6 +32,7 @@ function initApp() {
   const offsetToMonday = currentDay === 0 ? -6 : 1 - currentDay;
   const monday = new Date(now);
   monday.setDate(now.getDate() + offsetToMonday);
+  monday.setHours(0, 0, 0, 0);
   startDate = monday;
   
   loadStatus();
@@ -42,6 +59,7 @@ function changeStartDate(offset) {
 function loadStatus() {
   let endDate = new Date(startDate)
   endDate.setDate(startDate.getDate() + 6);
+  endDate.setHours(23, 59, 59, 999);
   
   displayTitle(startDate, endDate);
   highlightWeekday(startDate, endDate);
@@ -54,6 +72,7 @@ function loadStatus() {
     .then((r) => r.json())
     .then((s) => {
       fillTable(s);
+      rateWeek(s, startDate, endDate);
     });
 }
 
@@ -79,6 +98,27 @@ function fillTable(rows) {
         cell.innerHTML = "";
       }
     }
+  }
+}
+
+function rateWeek(rows, startDate, endDate) {
+  for (const instrument of [ "piano", "cello", "trumpet"]) {
+    const rating = rateWeekForInstrument(rows, startDate, endDate, instrument);
+    const img = document.getElementById("rating_" + instrument);
+    const icon = instrument + "_" + rating + "_128";
+    img.src = assets[icon];
+  }
+}
+
+function rateWeekForInstrument(rows, startDate, endDate, instrument) {
+  const count = rows.filter(r => r.name == instrument).length;
+
+  const now = new Date()
+  if (endDate > now) {
+    // week not yet completed or in the future
+    return count >= 3 ? "happy" : "neutral";
+  } else {
+    return count >= 3 ? "happy" : "sad";
   }
 }
 
@@ -156,8 +196,10 @@ function postToServer(instrument) {
 
 // feiert Üben (nach erfolgreichem Speichern)
 function celebrate(instrument) {
-  // TODO sound?
-  
+  // Fanfare
+  const sound = new Audio(assets[instrument + "_mp3"]);
+  sound.play();
+
   // Konfetti
   fireConfetti();
 }

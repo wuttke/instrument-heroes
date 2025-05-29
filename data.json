@@ -3,13 +3,42 @@
     "piano",
     "cello"
   ],
-  "2025-05-15": [
+  "2025-05-17": [
+    "cello",
+    "trumpet",
+    "piano"
+  ],
+  "2025-05-16": [
+    "piano",
+    "cello",
+    "trumpet"
+  ],
+  "2025-05-18": [
+    "cello",
+    "trumpet",
+    "piano"
+  ],
+  "2025-05-19": [
+    "cello",
+    "trumpet"
+  ],
+  "2025-05-20": [
+    "cello",
+    "piano"
+  ],
+  "2025-05-24": [
+    "piano"
+  ],
+  "2025-05-25": [
     "trumpet",
     "cello",
     "piano"
   ],
-  "2025-05-17": [
-    "piano",
+  "2025-05-26": [
+    "trumpet",
     "cello"
+  ],
+  "2025-05-29": [
+    "trumpet"
   ]
 }
