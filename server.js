@@ -1,71 +1,69 @@
 // server.js
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
+const FileStorage = require("./persistence/fileStorage");
+const MongoStorage = require("./persistence/mongoStorage");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, "data.json");
+
+const STORAGE_TYPE = process.env.STORAGE_TYPE || "file";
+const MONGO_URL = process.env.MONGO_URL;
+const MONGO_DB_NAME = process.env.MONGO_DB_NAME || "instrument-heroes";
+
+let storage;
+if (STORAGE_TYPE === "mongo") {
+  if (!MONGO_URL) {
+    console.error("MONGO_URL environment variable is required when using mongo storage");
+    process.exit(1);
+  }
+  storage = new MongoStorage(MONGO_URL, MONGO_DB_NAME);
+} else {
+  storage = new FileStorage();
+}
 
 app.use(express.json());
 app.use(express.static("public"));
 
-// Hilfsfunktion: Datum als YYYY-MM-DD
 const getToday = () => new Date().toISOString().split("T")[0];
 
-// Hilfsfunktion: Daten aus Datei lesen
-const readData = () => {
-  if (!fs.existsSync(DATA_FILE)) return {};
-  return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-};
-
-// Hilfsfunktion: Daten in Datei schreiben
-const writeData = (data) => {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
-
 // GET /api/practice?start=yyyy-MM-dd&end=yyyy-MM-dd
-app.get("/api/practice", (req, res) => {
+app.get("/api/practice", async (req, res) => {
   const { start, end } = req.query;
   if (!start || !end)
     return res.status(400).json({ error: "start and end required" });
 
-  const data = readData();
-  const result = [];
-
-  for (const [date, names] of Object.entries(data)) {
-    if (date >= start && date <= end) {
-      names.forEach((name) => result.push({ date, name }));
-    }
+  try {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const dayCount = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    
+    const result = await storage.readInstrumentsByDate(start, dayCount);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  res.json(result);
 });
 
 // POST /api/practice
-app.post("/api/practice", (req, res) => {
+app.post("/api/practice", async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: "name is required" });
 
   const today = getToday();
-  const data = readData();
 
-  if (!data[today]) data[today] = [];
-
-  if (data[today].includes(name)) {
-    return res.status(409).json({ error: `entry for '${name}' already exists for today` });
+  try {
+    await storage.addInstrumentToDate(today, name);
+    res.status(201).json({ date: today, name });
+  } catch (error) {
+    if (error.message.includes("already exists")) {
+      res.status(409).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
   }
-
-  data[today].push(name);
-  writeData(data);
-
-  res.status(201).json({ date: today, name });
 });
 
-app.get("/api/status", (req, res) => {
-  const data = readData();
-  res.send(data);
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
