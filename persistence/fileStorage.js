@@ -3,7 +3,7 @@ const path = require("path");
 const PersistenceInterface = require("./interface");
 
 class FileStorage extends PersistenceInterface {
-  constructor(dataFile = path.join(__dirname, "..", "data.json")) {
+  constructor(dataFile = process.env.DATA_FILE || path.join(__dirname, "..", "data.json")) {
     super();
     this.dataFile = dataFile;
   }

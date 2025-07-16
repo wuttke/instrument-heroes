@@ -8,6 +8,8 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node test.js"
+    "test": "node test-storage.js && node test-api.js",
+    "test:storage": "node test-storage.js",
+    "test:api": "node test-api.js"
   }
 }

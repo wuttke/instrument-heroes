@@ -36,6 +36,11 @@ app.get("/api/practice", async (req, res) => {
   try {
     const startDate = new Date(start);
     const endDate = new Date(end);
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error("Invalid date format");
+    }
+    
     const dayCount = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
     
     const result = await storage.readInstrumentsByDate(start, dayCount);
