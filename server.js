@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const FileStorage = require("./persistence/fileStorage");
 const MongoStorage = require("./persistence/mongoStorage");
+const { obfuscateUrl } = require("./utils");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,14 +12,20 @@ const STORAGE_TYPE = process.env.STORAGE_TYPE || "file";
 const MONGO_URL = process.env.MONGO_URL;
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || "instrument-heroes";
 
+
+console.log(`[Server] Starting with storage type: ${STORAGE_TYPE}`);
+
 let storage;
 if (STORAGE_TYPE === "mongo") {
   if (!MONGO_URL) {
-    console.error("MONGO_URL environment variable is required when using mongo storage");
+    console.error("[Server] MONGO_URL environment variable is required when using mongo storage");
     process.exit(1);
   }
+  console.log(`[Server] Using MongoDB storage with URL: ${obfuscateUrl(MONGO_URL)}`);
+  console.log(`[Server] Database name: ${MONGO_DB_NAME}`);
   storage = new MongoStorage(MONGO_URL, MONGO_DB_NAME);
 } else {
+  console.log(`[Server] Using file storage`);
   storage = new FileStorage();
 }
 
